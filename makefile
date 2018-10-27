@@ -1,28 +1,35 @@
 BUILD_DIR=build
 
 COMMON_DIR=src/common
-COMMON_FILES="$(COMMON_DIR)/common.cpp"
 
-INTERPRETER_DIR=src/Interpreter
-INTERPRETER_FILES="$(INTERPRETER_DIR)/main.cpp" "$(INTERPRETER_DIR)/Interpreter.cpp"
-INTERPRETER_EXEC="$(BUILD_DIR)/i"
+INTERPRETER_DIR=src/interpreter
+INTERPRETER_EXEC="$(BUILD_DIR)/mrun"
 
 COMPILER_DIR=src/Compiler
-COMPILER_FILES="$(COMPILERr_DIR)/main.cpp" "$(COMPILER_DIR)/Token.cpp"
-COMPILER_EXEC="$(BUILD_DIR)/icc"
+COMPILER_EXEC="$(BUILD_DIR)/mcc"
 
-COMPILER=clang++ -std=c++17 -O2 -I "$(COMMON_DIR)" $(COMMON_FILES)
 
-.PHONY: clean interpreter Compiler
+COMMON_FILES="$(COMMON_DIR)/common.cpp"
+COMMON_DEPENDENCIES=$(BUILD_DIR) $(COMMON_FILES) "$(COMMON_DIR)/common.hpp" makefile
+INTERPRETER_FILES="$(INTERPRETER_DIR)/main.cpp" "$(INTERPRETER_DIR)/interpreter.cpp"
+COMPILER_FILES="$(COMPILER_DIR)/main.cpp" "$(COMPILER_DIR)/Token.cpp"
+
+
+COMPILER=g++ -Ofast -march=native -pipe -std=c++17 -I "$(COMMON_DIR)" $(COMMON_FILES)
+
+
+$(INTERPRETER_EXEC): $(COMMON_DEPENDENCIES) "$(INTERPRETER_DIR)/interpreter.hpp"
+	$(COMPILER) $(INTERPRETER_FILES) -o $(INTERPRETER_EXEC) -lgmpxx -lgmp
+	strip -s $(INTERPRETER_EXEC)
+
+$(COMPILER_EXEC): $(COMMON_DEPENDENCIES)
+	$(COMPILER) $(COMPILER_FILES) -o $(COMPILER_EXEC) -lgmpxx -lgmp
+	strip -s $(COMPILER_EXEC)
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
-interpreter: $(BUILD_DIR)
-	$(COMPILER) $(INTERPRETER_FILES) -o $(INTERPRETER_EXEC)
-
-compiler: $(BUILD_DIR)
-	$(COMPILER) $(COMPILER_FILES) -o $(COMPILER_EXEC)
+.PHONY: clean
 
 clean: $(BUILD_DIR)
-	rm -r $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)

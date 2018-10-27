@@ -1,5 +1,7 @@
 #include "common.hpp"
 
+#include <gmpxx.h>
+
 std::vector<std::string> ModernArgs(int argc, const char **argv)
 {
     std::vector<std::string> args = {};
