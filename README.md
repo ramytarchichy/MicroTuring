@@ -14,7 +14,7 @@ MicroTuring runs a modified version of [Subleq+](https://esolangs.org/wiki/Suble
         if (acc >= 0):
             jmp b
 
-The instruction takes advantage of an internal register called `acc` (accumulator) to reduce the number of parameters to 2: by consequence, more instructions and cycles are needed to perform the same computations, and the code might become more confusing (see Turing tarpit). It also has an address register (obviously), but we're going to ignore it.
+The instruction takes advantage of an internal register called `acc` (accumulator) to reduce the number of parameters to 2: by consequence, more instructions and cycles are needed to perform the same computations, and the code will become more confusing (see [Turing tarpit](https://en.wikipedia.org/wiki/Turing_tarpit)). It also has an address register (obviously), but we're going to ignore it.
 
 The memory space is an array of GMP arbitrary-precision rational numbers (`mpq_class`) because it allows for rational arithmetic and storage of rational numbers. However, the `a` and `b` arguments passed to the instruction, being memory addresses, must be positive integers (rationals with a denominator of 1) smaller than 2^64, including 0.
 
@@ -25,7 +25,7 @@ Each memory address points to a single rational number, meaning that a single in
 Linux: `./mrun <filename> [options]`
 
 Options:
-* `--fast` will bypass safety checks. It might also make demons fly out of your nose.
+* `--fast`: bypasses safety checks. It might also make demons fly out of your nose.
 
 ## Compiler
 

@@ -35,16 +35,14 @@ int main(int argc, const char** argv)
 
     //Read file
     interpreter it = interpreter();
-    std::ifstream file(file_path, std::ios::binary);
+    std::ifstream file(file_path);
     if (file)
     {
-        size_t i = 0;
         do
         {
             mpq_class q;
             file >> q;
             it.memory.push_back(q);
-            i++;
         }
         while (!file.eof());
     }
