@@ -13,6 +13,6 @@ namespace micro_turing
         mpq_class acc = 0;
         uint64_t address = 0;
 
-        void step(bool safe);
+        void step();
     };
 }

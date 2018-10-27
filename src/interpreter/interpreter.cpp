@@ -16,7 +16,7 @@ uint64_t mpz_get_uint64_t(const mpz_t in)
 }
 
 
-void interpreter::step(bool safe)
+void interpreter::step()
 {
     //Get instruction arguments
     mpq_class* aq = &memory[address];
@@ -26,19 +26,15 @@ void interpreter::step(bool safe)
     mpz_class bz = bq->get_num();
 
     //Don't trust the input!
-    if (safe)
-    {
-        mpz_class aqd = aq->get_den();
-        mpz_class bqd = bq->get_den();
-
-        //TODO: Proper classes for each type of error
-        if (aqd != 1)               throw std::runtime_error("A address is not an integer: " + az.get_str() + "/" + aqd.get_str() + " at " + std::to_string(address) + ".");
-        if (bqd != 1)               throw std::runtime_error("B address is not an integer: " + bz.get_str() + "/" + bqd.get_str() + " at " + std::to_string(address) + ".");
-        if (az < 0)                 throw std::runtime_error("Negative A address " + az.get_str() + " at " + std::to_string(address) + ".");
-        if (bz < 0)                 throw std::runtime_error("Negative B address " + bz.get_str() + " at " + std::to_string(address+1) + ".");
-        if (az > memory.size() - 1) throw std::runtime_error("Out of bounds A address " + az.get_str() + " at " + std::to_string(address) + ".");
-        if (bz > memory.size() - 1) throw std::runtime_error("Out of bounds B address " + bz.get_str() + " at " + std::to_string(address) + ".");
-    }
+    mpz_class aqd = aq->get_den();
+    mpz_class bqd = bq->get_den();
+    //TODO: Proper classes for each type of error
+    if (aqd != 1)               throw std::runtime_error("A address is not an integer: " + az.get_str() + "/" + aqd.get_str() + " at " + std::to_string(address) + ".");
+    if (bqd != 1)               throw std::runtime_error("B address is not an integer: " + bz.get_str() + "/" + bqd.get_str() + " at " + std::to_string(address) + ".");
+    if (az < 0)                 throw std::runtime_error("Negative A address " + az.get_str() + " at " + std::to_string(address) + ".");
+    if (bz < 0)                 throw std::runtime_error("Negative B address " + bz.get_str() + " at " + std::to_string(address+1) + ".");
+    if (az > memory.size() - 1) throw std::runtime_error("Out of bounds A address " + az.get_str() + " at " + std::to_string(address) + ".");
+    if (bz > memory.size() - 2) throw std::runtime_error("Out of bounds B address " + bz.get_str() + " at " + std::to_string(address) + ".");
 
     //Convert `a` and `b` to a uint64_t for vector purposes
     uint64_t a = mpz_get_uint64_t(az.get_mpz_t());

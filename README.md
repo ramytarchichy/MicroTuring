@@ -22,10 +22,7 @@ Each memory address points to a single rational number, meaning that a single in
 
 ### Usage
 
-Linux: `./mrun <filename> [options]`
-
-Options:
-* `--fast`: bypasses safety checks. It might also make demons fly out of your nose.
+Linux: `./mrun <filename>`
 
 ## Compiler
 

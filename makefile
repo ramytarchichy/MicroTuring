@@ -15,7 +15,7 @@ INTERPRETER_FILES=$(INTERPRETER_DIR)/main.cpp $(INTERPRETER_DIR)/interpreter.cpp
 COMPILER_FILES=$(COMPILER_DIR)/main.cpp $(COMPILER_DIR)/Token.cpp
 
 
-COMPILER=g++ -Ofast -march=native -pipe -std=c++17 -I "$(COMMON_DIR)" $(COMMON_FILES)
+COMPILER=clang++ -O2 -pipe -I "$(COMMON_DIR)" $(COMMON_FILES)
 
 
 $(INTERPRETER_EXEC): $(COMMON_DEPENDENCIES) $(INTERPRETER_FILES) $(INTERPRETER_DIR)/interpreter.hpp

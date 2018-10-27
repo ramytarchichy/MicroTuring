@@ -13,24 +13,24 @@ int main(int argc, const char** argv)
     const std::vector<std::string> args = ModernArgs(argc, argv);
 
     //Settings
-    bool safe = true;
     bool got_file = false;
     std::string file_path;
 
     //Get settings from args
-    for (size_t i = 1; i <= args.size()-1; i++)
+    for (size_t i = 1; i <= args.size()-1; ++i)
     {
         const std::string& arg = args[i];
 
-        if (arg == "--fast")
-        {
-            safe = false;
-        }
-        else if (arg[1] != '-' && !got_file)
+        if (arg[1] != '-' && !got_file)
         {
             file_path = arg;
             got_file = true;
         }
+    }
+
+    if (!got_file)
+    {
+        std::cout << args[0] << ": fatal error: no input files" << std::endl;
     }
 
     //Read file
@@ -52,6 +52,6 @@ int main(int argc, const char** argv)
     //TODO: don't run forever, set up specific addresses for I/O, etc
     while(true)
     {
-        it.step(safe);
+        it.step();
     }
 }
