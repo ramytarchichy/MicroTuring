@@ -48,7 +48,7 @@ int main(int argc, const char** argv)
     //Machine
     interpreter_t cpu;
     int resultInitCpu = interpreter_init(&cpu, 16 * 1024 * 1024);
-    if (!resultInitCpu)
+    if (resultInitCpu != ERR_INTERPRETER_INIT_SUCCESS)
     {
         //TODO: print error
         return EXIT_FAILURE;
@@ -89,7 +89,15 @@ int main(int argc, const char** argv)
     bool isRunning = true;
     while(isRunning)
     {
-        interpreter_next(&cpu);
+        int resultNext = interpreter_next(&cpu);
+        
+        if (resultNext != ERR_INTERPRETER_NEXT_SUCCESS)
+        {
+            interpreter_free(&cpu);
+            //TODO: error
+
+            return EXIT_FAILURE;
+        }
     }
 
     interpreter_free(&cpu);
