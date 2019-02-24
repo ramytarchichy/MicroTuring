@@ -18,14 +18,14 @@ err_interpreter_next_t interpreter_next(interpreter_t* p)
     if (p->address + 2 * sizeof(long long) > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_INSTRUCTION;
 
-    const long long a = *(long long*)&p->memory[p->address];
-    const long long b = *(long long*)&p->memory[p->address + sizeof a];
+    const long long a = *interpreter_data(p, p->address);
+    const long long b = *interpreter_data(p, p->address + sizeof a);
 
     if (a + sizeof(long long) > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_ACCESS;
 
-    p->accumulator -= *(long long*)&p->memory[a];
-    *(long long*)&p->memory[a] = p->accumulator;
+    p->accumulator -= *interpreter_data(p, a);
+    *interpreter_data(p, a) = p->accumulator;
 
     if (p->accumulator >= 0)
     {
@@ -35,6 +35,12 @@ err_interpreter_next_t interpreter_next(interpreter_t* p)
     }
 
     return ERR_INTERPRETER_NEXT_SUCCESS;
+}
+
+
+long long* interpreter_data(interpreter_t* p, size_t address)
+{
+    return (long long*)&p->memory[address];
 }
 
 

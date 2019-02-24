@@ -28,4 +28,5 @@ typedef enum
 
 err_interpreter_init_t interpreter_init(interpreter_t* p, size_t memory_size);
 err_interpreter_next_t interpreter_next(interpreter_t* p);
+long long*             interpreter_data(interpreter_t* p, size_t address);
 void                   interpreter_free(interpreter_t* p);
