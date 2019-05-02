@@ -18,8 +18,8 @@ err_interpreter_next_t interpreter_next(interpreter_t* p)
     if (p->address + 2 > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_INSTRUCTION;
 
-    const long long a = p->memory[p->address];
-    const long long b = p->memory[p->address+1];
+    const word_t a = p->memory[p->address];
+    const word_t b = p->memory[p->address+1];
 
     if (a > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_ACCESS;

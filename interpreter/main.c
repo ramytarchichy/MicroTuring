@@ -1,8 +1,13 @@
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "interpreter.h"
 #include "utils.h"
+
+
+#define LIMIT_MEMORY 64*1024 * sizeof(word_t)
+#define LIMIT_SPEED  
 
 
 int main(int argc, const char** argv)
@@ -14,32 +19,39 @@ int main(int argc, const char** argv)
     }
 
     //Settings
-    char* file_path = argv[1];
-
-    //Machine
-    interpreter_t cpu;
-    int resultInitCpu = interpreter_init(&cpu, 16 * 1024 * 1024);
-    if (resultInitCpu != ERR_INTERPRETER_INIT_SUCCESS)
-    {
-        printf("ERROR: unable to allocate memory.\n");
-        return EXIT_FAILURE;
-    }
+    const char* file_path = argv[1];
 
 
     //Store program in a variable
     size_t program_size;
     unsigned char* program;
-    int resultRead = read_file_to_memory(file_path, &program, &program_size);
+    int result_read = read_file_to_memory(file_path, &program, &program_size);
     
-    if (resultRead != 0)
+    if (result_read != 0)
     {
         free(program);
-        interpreter_free(&cpu);
         
         printf("ERROR: unable to read program file.\n");
 
         return EXIT_FAILURE;
     }
+
+#ifdef LIMIT_MEMORY
+    const size_t memory_limit = LIMIT_MEMORY;
+#else
+    size_t memory_limit = program_size;
+#endif //LIMIT_MEMORY
+
+    //Machine
+    interpreter_t cpu;
+    int result_init_cpu = interpreter_init(&cpu, memory_limit);
+    if (result_init_cpu != ERR_INTERPRETER_INIT_SUCCESS)
+    {
+        printf("ERROR: unable to allocate memory.\n");
+        return EXIT_FAILURE;
+    }
+
+#ifdef LIMIT_MEMORY
 
     if (program_size > cpu.memory_size)
     {
@@ -51,18 +63,27 @@ int main(int argc, const char** argv)
         return EXIT_FAILURE;
     }
 
+#endif //LIMIT_MEMORY
+
     //Copy program to interpreter
     memcpy(cpu.memory, program, program_size);
-
     free(program);
 
 
     //Main loop
-    //TODO: set up specific addresses for I/O, etc
-    bool isRunning = true;
-    while(isRunning)
+    bool is_running = true;
+    while(is_running)
     {
-        int resultNext = interpreter_next(&cpu);
+
+#ifdef LIMIT_SPEED
+        
+        //Limit clock speed
+        usleep(1);
+
+#endif //LIMIT_SPEED
+
+        // Execute next instruction
+        int result_next = interpreter_next(&cpu);
         
         // Error handling
         if (result_next != ERR_INTERPRETER_NEXT_SUCCESS)

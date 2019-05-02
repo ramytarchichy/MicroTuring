@@ -3,12 +3,14 @@
 #include <stdlib.h>
 
 
+typedef long long word_t;
+
 typedef struct
 {
-    size_t     address;
-    long long  accumulator;
-    size_t     memory_size;
-    long long* memory;
+    size_t  address;
+    word_t  accumulator;
+    size_t  memory_size;
+    word_t* memory;
 } interpreter_t;
 
 
