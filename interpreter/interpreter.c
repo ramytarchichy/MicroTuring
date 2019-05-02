@@ -15,32 +15,26 @@ err_interpreter_init_t interpreter_init(interpreter_t* p, size_t memory_size)
 
 err_interpreter_next_t interpreter_next(interpreter_t* p)
 {
-    if (p->address + 2 * sizeof(long long) > p->memory_size)
+    if (p->address + 2 > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_INSTRUCTION;
 
-    const long long a = *interpreter_data(p, p->address);
-    const long long b = *interpreter_data(p, p->address + sizeof a);
+    const long long a = p->memory[p->address];
+    const long long b = p->memory[p->address+1];
 
-    if (a + sizeof(long long) > p->memory_size)
+    if (a > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_ACCESS;
 
-    p->accumulator -= *interpreter_data(p, a);
-    *interpreter_data(p, a) = p->accumulator;
+    p->accumulator -= p->memory[a];
+    p->memory[a] = p->accumulator;
 
     if (p->accumulator >= 0)
     {
         //Yes it's technically undefined behavior if `b` is negative
-        //No I don't care
+        //No I don't care, it's more fun for the user to debug
         p->address = b;
     }
 
     return ERR_INTERPRETER_NEXT_SUCCESS;
-}
-
-
-long long* interpreter_data(interpreter_t* p, size_t address)
-{
-    return (long long*)&p->memory[address];
 }
 
 
