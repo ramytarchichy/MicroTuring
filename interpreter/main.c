@@ -7,9 +7,9 @@
 
 int main(int argc, const char** argv)
 {
-    if (argc != 1)
+    if (argc != 2)
     {
-        //TODO: print error
+        printf("ERROR: invalid number of arguments.\n");
         return EXIT_FAILURE;
     }
 
@@ -21,7 +21,7 @@ int main(int argc, const char** argv)
     int resultInitCpu = interpreter_init(&cpu, 16 * 1024 * 1024);
     if (resultInitCpu != ERR_INTERPRETER_INIT_SUCCESS)
     {
-        //TODO: print error
+        printf("ERROR: unable to allocate memory.\n");
         return EXIT_FAILURE;
     }
 
@@ -35,7 +35,8 @@ int main(int argc, const char** argv)
     {
         free(program);
         interpreter_free(&cpu);
-        //TODO: print error
+        
+        printf("ERROR: unable to read program file.\n");
 
         return EXIT_FAILURE;
     }
@@ -44,7 +45,8 @@ int main(int argc, const char** argv)
     {
         free(program);
         interpreter_free(&cpu);
-        //TODO: print error
+        
+        printf("ERROR: program is too big.\n");
 
         return EXIT_FAILURE;
     }
@@ -62,10 +64,25 @@ int main(int argc, const char** argv)
     {
         int resultNext = interpreter_next(&cpu);
         
-        if (resultNext != ERR_INTERPRETER_NEXT_SUCCESS)
+        // Error handling
+        if (result_next != ERR_INTERPRETER_NEXT_SUCCESS)
         {
             interpreter_free(&cpu);
-            //TODO: error
+            
+            switch (result_next)
+            {
+                case ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_ACCESS:
+                    printf("ERROR: program tried to access an illegal address.\n");
+                    break;
+
+                case ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_INSTRUCTION:
+                    printf("ERROR: program jumped to an illegal address.\n");
+                    break;
+
+                default:
+                    printf("ERROR: unkown program error: %u.\n", result_next);
+                    break;
+            }
 
             return EXIT_FAILURE;
         }
