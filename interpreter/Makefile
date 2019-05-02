@@ -3,8 +3,8 @@ OUT=mrun
 OUT_DBG=$(OUT)_dbg
 
 #Project files
-FILES_COMPILE=main.c interpreter.c
-FILES_DEPEND=$(FILES_COMPILE) Makefile interpreter.h
+FILES_COMPILE=main.c interpreter.c utils.c
+FILES_DEPEND=$(FILES_COMPILE) Makefile interpreter.h utils.h
 
 #Compiler and common flags
 CC=clang $(FILES_COMPILE) -O2 -march=native
