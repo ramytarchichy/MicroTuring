@@ -1,7 +1,7 @@
 #include "interpreter.h"
 
 
-err_interpreter_init_t interpreter_init(interpreter_t* p, size_t memory_size)
+err_interpreter_init interpreter_init(interpreter* p, size_t memory_size)
 {
     p->address     = 0;
     p->accumulator = 0;
@@ -13,13 +13,13 @@ err_interpreter_init_t interpreter_init(interpreter_t* p, size_t memory_size)
 }
 
 
-err_interpreter_next_t interpreter_next(interpreter_t* p)
+err_interpreter_next interpreter_next(interpreter* p)
 {
     if (p->address + 2 > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_INSTRUCTION;
 
-    const word_t a = p->memory[p->address];
-    const word_t b = p->memory[p->address+1];
+    const word a = p->memory[p->address];
+    const word b = p->memory[p->address+1];
 
     if (a > p->memory_size)
         return ERR_INTERPRETER_NEXT_OUT_OF_BOUNDS_ACCESS;
@@ -38,7 +38,7 @@ err_interpreter_next_t interpreter_next(interpreter_t* p)
 }
 
 
-void interpreter_free(interpreter_t* p)
+void interpreter_free(interpreter* p)
 {
     free(p->memory);
 }

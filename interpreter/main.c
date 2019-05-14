@@ -6,7 +6,7 @@
 #include "utils.h"
 
 
-#define LIMIT_MEMORY 64*1024 * sizeof(word_t)
+#define LIMIT_MEMORY 64*1024 * sizeof(word)
 #define LIMIT_SPEED  
 
 
@@ -43,7 +43,7 @@ int main(int argc, const char** argv)
 #endif //LIMIT_MEMORY
 
     //Machine
-    interpreter_t cpu;
+    interpreter cpu;
     int result_init_cpu = interpreter_init(&cpu, memory_limit);
     if (result_init_cpu != ERR_INTERPRETER_INIT_SUCCESS)
     {
