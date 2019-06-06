@@ -10,7 +10,7 @@ FILES_DEPEND=$(FILES_COMPILE) Makefile lexing.hpp
 CC=clang++ $(FILES_COMPILE) -O2 -march=native
 
 #Program test arguments
-ARGS=
+ARGS=lexer_test.asm
 
 #Release version
 $(OUT): $(FILES_DEPEND)

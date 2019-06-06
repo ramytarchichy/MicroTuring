@@ -18,22 +18,29 @@ bool token::add(char c)
     // I could have done this with regular expressions, but I prefer having more control
     // over what's going on.
 
+
+    //All the keywords used by the language go here
+    const std::unordered_set<std::string> keywords = {
+        "micro"
+    };
+
+    //All operators used by the language go here
+    const std::unordered_set<std::string> operators = {
+        ">",
+        "[", "]"
+    };
+
+    //All syntax symbols used by the language go here
+    const std::unordered_set<std::string> symbols = {
+        ":", "."
+    };
+
+
     switch (type)
     {
     case token_type::UNKNOWN:
         {
             lexeme += c;
-
-            //All operators used by the language go here
-            const std::unordered_set<std::string> operators = {
-                ">",
-                "[", "]"
-            };
-
-            //All syntax symbols used by the language go here
-            const std::unordered_set<std::string> symbols = {
-                ":"
-            };
 
             //Determine what type of token this is
             if (lexeme.size() == 1)
@@ -47,6 +54,17 @@ bool token::add(char c)
             }
             if (operators.find(lexeme) != operators.end()) type = token_type::OPERATOR;
             else if (symbols.find(lexeme) != symbols.end()) type = token_type::SYMBOL;
+            else if (isalnum(c))
+            {
+                //If it's in the set, it's a keyword. Otherwise it's an ID.
+                if (keywords.find(lexeme) != keywords.end()) type = token_type::KEYWORD;
+                else type = token_type::ID;
+            }
+            else if (type == token_type::UNKNOWN && (c == '\n' || c == ' ' || c == '\t'))
+            {
+                lexeme.pop_back();
+                return false;
+            }
 
             return true;
         }
@@ -59,11 +77,6 @@ bool token::add(char c)
             //Make sure the character is alphanumeric. If so, add it to the string.
             if (isalnum(c)) lexeme += c;
             else return false;
-
-            //All the keywords used by the language go here
-            const std::unordered_set<std::string> keywords = {
-                "micro"
-            };
 
             //If it's in the set above, it's a keyword. Otherwise it's an ID.
             if (keywords.find(lexeme) != keywords.end()) type = token_type::KEYWORD;
@@ -117,7 +130,7 @@ void tokenize(const std::string& text, std::vector<token>& tokens)
 
     for (char c : text)
     {
-        if (!tk.add(c))
+        while (!tk.add(c))
         {
             //The token is complete, add it to the list
             tokens.push_back(tk);
@@ -136,4 +149,7 @@ void tokenize(const std::string& text, std::vector<token>& tokens)
         }
         else ++column_num;
     }
+
+    //Add the last token
+    if (tk.lexeme != "") tokens.push_back(tk);
 }
